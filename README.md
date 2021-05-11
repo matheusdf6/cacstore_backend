@@ -22,7 +22,7 @@ This part of the system is responsable to declare the main entities of the store
   - Create product
   - Get one product
   - Get all products
-  - Get all products of category
+  - Get all products by category
   - Edit product
   - Delete product
 - Cart:
