@@ -1,9 +1,13 @@
 defmodule CacstoreWeb.ProductView do
   use CacstoreWeb, :view
+  alias Cacstore.Domain.Entities.Product
 
-  def render("product.json", _params) do
+  def render("product.json", %Product{name: name }) do
     %{
-      message: "ok"
+      message: "The product was created",
+      data: %{
+        name: name
+      }
     }
   end
 end

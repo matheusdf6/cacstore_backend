@@ -23,7 +23,7 @@ defmodule CacstoreWeb.Router do
   scope "/api", CacstoreWeb do
     pipe_through :api
 
-    get "/product", ProductController, :index
+    post "/product/create", ProductController, :index
   end
 
   # Enables LiveDashboard only for development
