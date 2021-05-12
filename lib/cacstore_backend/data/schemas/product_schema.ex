@@ -24,7 +24,7 @@ defmodule Cacstore.Data.Schemas.ProductSchema do
     |> check_constraint(:products, name: :price_must_be_greater_than_zero)
   end
 
-  def to_domain({ :ok, %{id: id, name: name, description: description, price: price, sale_price: sale_price, category: category} }) do
-    {:ok, %Product{id: id, name: name, description: description, price: price, sale_price: sale_price, category: category}}
-  end
+  def to_product({ :ok, %__MODULE__{} = product }), do: {:ok, to_product(product) }
+  def to_product( %__MODULE__{} = product ), do: struct( %Product{}, Map.from_struct(product) )
+  def to_product(params), do: params
 end

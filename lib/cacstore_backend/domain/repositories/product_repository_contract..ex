@@ -7,7 +7,7 @@ defmodule Cacstore.Domain.Repositories.ProductRepositoryContract do
 
   @callback create( params :: %{} ) :: {:ok, product :: %Product{} } | { :error, message :: String.t }
 
-  @callback update( id :: integer, product :: %Product{} ) :: {:ok, product :: %Product{} } | { :error, message :: String.t }
+  @callback update( params :: %{} ) :: {:ok, product :: %Product{} } | { :error, message :: String.t }
 
   @callback delete( id :: integer ) :: :ok | :error
 end
