@@ -23,8 +23,8 @@ config :cacstore_backend, Cacstore.Repo,
   migration_foreign_key: [type: :binary_id]
 
 config :cacstore_backend,
-  product_repository: Cacstore.Data.Repositories.ProductRepository
-
+  product_repository: Cacstore.Data.Repositories.ProductRepository,
+  coupon_repository: Cacstore.Data.Repositories.CouponRepository
 
 # Configures Elixir's Logger
 config :logger, :console,
