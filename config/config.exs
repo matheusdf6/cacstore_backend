@@ -24,7 +24,8 @@ config :cacstore_backend, Cacstore.Repo,
 
 config :cacstore_backend,
   product_repository: Cacstore.Data.Repositories.ProductRepository,
-  coupon_repository: Cacstore.Data.Repositories.CouponRepository
+  coupon_repository: Cacstore.Data.Repositories.CouponRepository,
+  cart_repository: Cacstore.Data.Repositories.CartRepository
 
 # Configures Elixir's Logger
 config :logger, :console,

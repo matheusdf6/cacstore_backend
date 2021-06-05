@@ -3,8 +3,15 @@ defmodule Cacstore.Data.Repositories.ProductRepository do
   alias Cacstore.Data.Schemas.ProductSchema
   alias Cacstore.Repo
   alias Ecto.Multi
+  import Ecto.Query
 
   @behaviour ProductRepositoryContract
+
+  @impl ProductRepositoryContract
+  def exists?(id) do
+    { result, _args } = find_product(Repo, id)
+    result
+  end
 
   @impl ProductRepositoryContract
   def create(params) do
@@ -23,6 +30,14 @@ defmodule Cacstore.Data.Repositories.ProductRepository do
   @impl ProductRepositoryContract
   def get_all() do
     products = Repo.all(ProductSchema)
+    |> Enum.map( fn(schema) -> ProductSchema.to_product(schema) end )
+    {:ok, products}
+  end
+
+  @impl ProductRepositoryContract
+  def get_many( id_list ) do
+    query = from p in ProductSchema, where: p.id in ^id_list
+    products = Repo.all(query)
     |> Enum.map( fn(schema) -> ProductSchema.to_product(schema) end )
     {:ok, products}
   end
@@ -47,12 +62,12 @@ defmodule Cacstore.Data.Repositories.ProductRepository do
 
   defp find_product(repo, id) do
     case repo.get(ProductSchema, id) do
-      nil -> {:error, "Product not found"}
+      nil -> {:not_found, "Product not found"}
       product -> {:ok, product}
     end
   end
 
-  defp update_product({:error, _reason} = error, _repo, _params ), do: error
+  defp update_product({:not_found, reason}, _repo, _params ), do: { :error, reason }
   defp update_product(%ProductSchema{} = product, repo, params) do
     product
     |> ProductSchema.changeset(params)
@@ -60,7 +75,7 @@ defmodule Cacstore.Data.Repositories.ProductRepository do
     |> ProductSchema.to_product()
   end
 
-  defp delete_product({:error, _reason} = error, _repo ), do: error
+  defp delete_product({:not_found, reason}, _repo ), do: { :error, reason }
   defp delete_product(%ProductSchema{} = product, repo ) do
     case repo.delete(product) do
         { :ok, _struct } -> { :ok, "Product deleted"}

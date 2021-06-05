@@ -14,7 +14,9 @@ defmodule Cacstore.Application do
       # Start the PubSub system
       {Phoenix.PubSub, name: Cacstore.PubSub},
       # Start the Endpoint (http/https)
-      CacstoreWeb.Endpoint
+      CacstoreWeb.Endpoint,
+      # Start Cart Registration Service
+      Cacstore.Data.CartRegistry
       # Start a worker by calling: Cacstore.Worker.start_link(arg)
       # {Cacstore.Worker, arg}
     ]

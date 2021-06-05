@@ -7,6 +7,12 @@ defmodule Cacstore.Data.Repositories.CouponRepository do
   @behaviour CouponRepositoryContract
 
   @impl CouponRepositoryContract
+  def exists?(code) do
+    { result, _args } = find(code)
+    result
+  end
+
+  @impl CouponRepositoryContract
   def create(params) do
     params
     |> CouponSchema.changeset()
@@ -15,12 +21,10 @@ defmodule Cacstore.Data.Repositories.CouponRepository do
   end
 
   @impl CouponRepositoryContract
-  def find(id) do
-    with {:ok, uuid } <- Ecto.UUID.cast(id) do
-      find_coupon(Repo, uuid)
-      |> CouponSchema.to_coupon()
-    else
-      _ -> {:ok, "Invalid ID"}
+  def find(code) do
+    case Repo.get_by(CouponSchema, code: code) do
+      nil -> { :not_found, "Coupon not found" }
+      coupon -> { :ok, CouponSchema.to_coupon(coupon) }
     end
   end
 
@@ -51,12 +55,12 @@ defmodule Cacstore.Data.Repositories.CouponRepository do
 
   defp find_coupon(repo, id) do
     case repo.get(CouponSchema, id) do
-      nil -> {:error, "Coupon not found"}
+      nil -> {:not_found, "Coupon not found"}
       coupon -> {:ok, coupon}
     end
   end
 
-  defp update_coupon({:error, _reason} = error, _repo, _params ), do: error
+  defp update_coupon({:not_found, reason}, _repo, _params ), do: { :error, reason }
   defp update_coupon( %CouponSchema{} = coupon, repo, params) do
     coupon
     |> CouponSchema.changeset(params)
@@ -64,7 +68,7 @@ defmodule Cacstore.Data.Repositories.CouponRepository do
     |> CouponSchema.to_coupon()
   end
 
-  defp delete_coupon({:error, _reason} = error, _repo ), do: error
+  defp delete_coupon({:not_found, reason}, _repo ), do: { :error, reason }
   defp delete_coupon(%CouponSchema{} = coupon, repo ) do
     case repo.delete(coupon) do
         { :ok, _struct } -> { :ok, "Coupon deleted"}
